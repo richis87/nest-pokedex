@@ -11,6 +11,13 @@ async function bootstrap() {
     new ValidationPipe({ 
       whitelist: true, 
      forbidNonWhitelisted: true,   
+     //***************************
+     //Esto permita la transformación automática de los parámetros que llegan en el API
+     transform:true,
+     transformOptions:{
+      enableImplicitConversion: true,
+     }
+     //************************** */
   }));
 
   
