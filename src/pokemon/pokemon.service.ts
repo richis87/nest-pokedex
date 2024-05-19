@@ -5,17 +5,29 @@ import { Pokemon } from './entities/pokemon.entity';
 import { Model, isValidObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PokemonService {
+
+  private defaultLimit: number;
 
   constructor(
 
     // Creado por el equipo de NEST
     @InjectModel( Pokemon.name )
-    private readonly pokemonModel: Model<Pokemon>
+    private readonly pokemonModel: Model<Pokemon>,
+    private readonly configService: ConfigService
   ){
-  
+   // console.log(process.env.DEFAULT_LIMINT)
+
+    // Esto hace validación de la variable de entorno y si no existe envía un error
+    //console.log(configService.getOrThrow('jwt-seed'))
+
+    //console.log(configService.getOrThrow('default_limit'))
+
+    this.defaultLimit=configService.get<number>('default_limit')
+    //console.log( defaultLimit )
   }
 
   async create(createPokemonDto: CreatePokemonDto) {
@@ -34,7 +46,7 @@ export class PokemonService {
 
   findAll(paginationDto: PaginationDto) {
 
-  const { limit = 10, offset = 0 } =     paginationDto
+  const { limit = this.defaultLimit, offset = 0 } =     paginationDto
 
     return this.pokemonModel.find()
     .limit (limit)
